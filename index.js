@@ -30,6 +30,14 @@ var Framer = module.exports = function Framer(opts) {
       , authHandler = opts.authHandler;
 
     return function (req, res) {
+      var acceptHeader = req.headers.accept;
+      var isTypeHtml = (/text\/html/).test(acceptHeader);
+      var isTypeText = (/text\/text/).test(acceptHeader);
+      var contentType = 'application/json';
+      
+      if(isTypeHtml) contentType = 'text/html';
+      else if(isTypeText) contentType = 'text/text';   
+
       var headers = {}
         , form = new multiparty.Form()
         , batch = new Batch();
@@ -176,7 +184,7 @@ var Framer = module.exports = function Framer(opts) {
   };
 
   this._handleError = function (code, res, err) {
-    res.writeHead(code, {'content-type': 'application/json'});
+    res.writeHead(res.statusCode, {'content-type': contentType});
     res.end(JSON.stringify({ statusCode: code, error: err.toString() }));
   };
 

@@ -36,7 +36,8 @@ var Framer = module.exports = function Framer(opts) {
       var contentType = 'application/json';
       
       if(isTypeHtml) contentType = 'text/html';
-      else if(isTypeText) contentType = 'text/text';   
+      else if(isTypeText) contentType = 'text/text';
+      
 
       var headers = {}
         , form = new multiparty.Form()
@@ -91,7 +92,7 @@ var Framer = module.exports = function Framer(opts) {
             return;
           }
 
-          res.writeHead(res.statusCode, {'content-type': 'application/json'});
+          res.writeHead(res.statusCode, {'content-type': contentType});
           if (s3Response.statusCode === 200) {
             res.end(JSON.stringify({ statusCode: 200, uri: prefix + '/raw' + destPath, type: type }));
           }
@@ -184,7 +185,7 @@ var Framer = module.exports = function Framer(opts) {
   };
 
   this._handleError = function (code, res, err) {
-    res.writeHead(res.statusCode, {'content-type': contentType});
+    res.writeHead(code, {'content-type': 'application/json'});
     res.end(JSON.stringify({ statusCode: code, error: err.toString() }));
   };
 
